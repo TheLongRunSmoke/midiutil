@@ -467,6 +467,36 @@ class MIDITrack:
         '''
         Write the events in MIDIEvents to the MIDI stream.
         '''
+        preciseTime = 0.0                   # Actual time of event, ignoring round-off
+        actualTime = 0.0                    # Time as written to midi stream, include round-off
+        for event in self.MIDIEventList:
+
+            preciseTime = preciseTime + event.time
+
+            # Convert the time to variable length and back, to see how much
+            # error is introduced
+
+            testBuffer = bytes()
+            varTime = writeVarLength(event.time)
+            for timeByte in varTime:
+                testBuffer = testBuffer + struct.pack('>B',timeByte)
+            (roundedVal,discard) = readVarLength(0,testBuffer)
+            roundedTime = actualTime + roundedVal
+            # print "Rounded, Precise: %15.10f %15.10f" % (roundedTime, preciseTime)
+
+            # Calculate the delta between the two and apply it to the event time.
+
+            delta = preciseTime - roundedTime
+            event.time = event.time + delta
+
+            # Now update the actualTime value, using the updated event time.
+
+            testBuffer = bytes()
+            varTime = writeVarLength(event.time)
+            for timeByte in varTime:
+                testBuffer = testBuffer + struct.pack('>B',timeByte)
+            (roundedVal,discard) = readVarLength(0,testBuffer)
+            actualTime = actualTime + roundedVal
         
         for event in self.MIDIEventList:
             if event.type == "NoteOn":
@@ -954,7 +984,7 @@ def writeVarLength(i):
     significant bit is 1, then more bytes follow. If it is zero, then the
     byte in question is the last in the stream
     '''
-    input = int(i)
+    input = int(i+0.5)
     output = [0,0,0,0]
     reversed = [0,0,0,0]
     count = 0
@@ -974,6 +1004,25 @@ def writeVarLength(i):
     reversed[2] = output[1]
     reversed[3] = output[0]
     return reversed[4-count:4]
+    
+def readVarLength(offset, buffer):
+    '''A function to read a MIDI variable length variable.
+
+    It returns a tuple of the value read and the number of bytes processed. The
+    input is an offset into the buffer, and the buffer itself.
+    '''
+    toffset = offset
+    output = 0
+    bytesRead = 0
+    while True:
+        output = output << 7
+        byte = struct.unpack_from('>B',buffer,toffset)[0]
+        toffset = toffset + 1
+        bytesRead = bytesRead + 1
+        output = output + (byte & 127)
+        if (byte & 128) == 0:
+            break
+    return (output, bytesRead)
 
 def frequencyTransform(freq):
     '''Returns a three-byte transform of a frequencyTransform
