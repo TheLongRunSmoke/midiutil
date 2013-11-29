@@ -124,3 +124,15 @@ the library is provided in the documentation directory.
 
 Have fun!
 
+---------
+Thank You
+---------
+
+I'd like to mention the following people who have given feedback, but
+fixes,  and suggestions on the library:
+
+    Bram de Jong
+    Mike Reeves-McMillan
+    Egg Syntax
+    Nils Gey
+    Francis G.

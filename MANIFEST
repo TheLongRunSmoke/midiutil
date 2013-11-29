@@ -11,3 +11,4 @@ examples/single-note-example.py
 documentation/Extending.txt
 documentation/ClassReference.txt
 src/unittests/miditest.py
+src/unittests/miditest.py3
