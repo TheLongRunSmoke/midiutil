@@ -48,11 +48,11 @@ class TestMIDIUtils(unittest.TestCase):
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].type, 'NoteOn')
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].time,  0)
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].type, 'NoteOff')
-        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  128)
+        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  960)
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[2].type, 'NoteOn')
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[2].time,  0)
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[3].type, 'NoteOff')
-        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[3].time,  256)
+        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[3].time,  1920)
         
     def testTimeShift(self):
         
@@ -63,7 +63,7 @@ class TestMIDIUtils(unittest.TestCase):
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].type, 'NoteOn')
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].time,  0)
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].type, 'NoteOff')
-        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  128)
+        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  960)
         
         # With two tracks
         MyMIDI = MIDIFile(2)
@@ -73,11 +73,11 @@ class TestMIDIUtils(unittest.TestCase):
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].type, 'NoteOn')
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].time,  0)
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].type, 'NoteOff')
-        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  128)
+        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  960)
         self.assertEquals(MyMIDI.tracks[1].MIDIEventList[0].type, 'NoteOn')
-        self.assertEquals(MyMIDI.tracks[1].MIDIEventList[0].time,  128)
+        self.assertEquals(MyMIDI.tracks[1].MIDIEventList[0].time,  960)
         self.assertEquals(MyMIDI.tracks[1].MIDIEventList[1].type, 'NoteOff')
-        self.assertEquals(MyMIDI.tracks[1].MIDIEventList[1].time,  128)
+        self.assertEquals(MyMIDI.tracks[1].MIDIEventList[1].time,  960)
         
         # Negative Time
         MyMIDI = MIDIFile(1)
@@ -86,7 +86,7 @@ class TestMIDIUtils(unittest.TestCase):
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].type, 'NoteOn')
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].time,  0)
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].type, 'NoteOff')
-        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  128)
+        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  960)
         
         # Negative time, two tracks
         
@@ -97,11 +97,11 @@ class TestMIDIUtils(unittest.TestCase):
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].type, 'NoteOn')
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[0].time,  0)
         self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].type, 'NoteOff')
-        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  128)
+        self.assertEquals(MyMIDI.tracks[0].MIDIEventList[1].time,  960)
         self.assertEquals(MyMIDI.tracks[1].MIDIEventList[0].type, 'NoteOn')
-        self.assertEquals(MyMIDI.tracks[1].MIDIEventList[0].time,  128)
+        self.assertEquals(MyMIDI.tracks[1].MIDIEventList[0].time,  960)
         self.assertEquals(MyMIDI.tracks[1].MIDIEventList[1].type, 'NoteOff')
-        self.assertEquals(MyMIDI.tracks[1].MIDIEventList[1].time,  128)
+        self.assertEquals(MyMIDI.tracks[1].MIDIEventList[1].time,  960)
  
     def testFrequency(self):
         freq = frequencyTransform(8.1758)
