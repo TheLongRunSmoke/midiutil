@@ -234,7 +234,7 @@ class MIDITrack:
     def __init__(self, removeDuplicates,  deinterleave):
         '''Initialize the MIDITrack object.
         '''
-        self.headerString = struct.pack('cccc',str.encode('M'),str.encode('T'),str.encode('r'),str.encode('k'))
+        self.headerString = struct.pack('cccc',b'M',b'T',b'r',b'k')
         self.dataLength = 0 # Is calculated after the data is in place
         self.MIDIdata = b""
         self.closed = False
@@ -675,7 +675,7 @@ class MIDIHeader:
     def __init__(self,numTracks):
         ''' Initialize the data structures
         '''
-        self.headerString = struct.pack('cccc',str.encode('M'),str.encode('T'),str.encode('h'),str.encode('d'))
+        self.headerString = struct.pack('cccc',b'M',b'T',b'h',b'd')
         self.headerSize = struct.pack('>L',6)
         # Format 1 = multi-track file
         self.format = struct.pack('>H',1)
