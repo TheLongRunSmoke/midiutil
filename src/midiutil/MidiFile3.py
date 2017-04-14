@@ -3,20 +3,25 @@
 # Purpose:     MIDI file manipulation utilities
 #
 # Author:      Mark Conway Wirt <emergentmusics) at (gmail . com>
+# Author:      Alexander Varakosov <thelongrunsmoke) at (gmail . com>
 #
 # Created:     2008/04/17
+# Fixed:       2017/04/17
 # Copyright:   (c) 2009 Mark Conway Wirt
+# Copyright:   (c) 2017 thelongrunsmoke
 # License:     Please see License.txt for the terms under which this
 #              software is distributed.
 # -----------------------------------------------------------------------------
 
-import struct, sys, math
+import math
+import struct
+import sys
 
-# TICKSPERBEAT is the number of "ticks" (time measurement in the MIDI file) that
+# TICKS_PER_BEAT is the number of "ticks" (time measurement in the MIDI file) that
 # corresponds to one beat. This number is somewhat arbitrary, but should be chosen
 # to provide adequate temporal resolution.
 
-TICKSPERBEAT = 960
+TICKS_PER_BEAT = 960
 
 controllerEventTypes = {
     'pan': 0x0a
@@ -164,12 +169,12 @@ class MIDITrack:
         def compare(self, other):
             """Compare two notes for equality.
             """
-            if self.pitch == other.pitch and \
-                            self.time == other.time and \
-                            self.duration == other.duration and \
-                            self.volume == other.volume and \
-                            self.type == other.type and \
-                            self.channel == other.channel:
+            if self.pitch == other.pitch \
+                    and self.time == other.time \
+                    and self.duration == other.duration \
+                    and self.volume == other.volume \
+                    and self.type == other.type \
+                    and self.channel == other.channel:
                 return True
             else:
                 return False
@@ -187,31 +192,31 @@ class MIDITrack:
         """A class that encapsulates a program change event.
         """
 
-        def __init__(self, channel, time, programNumber):
+        def __init__(self, channel, time, program_number):
             GenericEvent.__init__(self, time, )
             self.type = 'programChange'
-            self.programNumber = programNumber
+            self.programNumber = program_number
             self.channel = channel
 
     class SysExEvent(GenericEvent):
         """A class that encapsulates a System Exclusive  event.
         """
 
-        def __init__(self, time, manID, payload):
+        def __init__(self, time, man_id, payload):
             GenericEvent.__init__(self, time, )
             self.type = 'SysEx'
-            self.manID = manID
+            self.manID = man_id
             self.payload = payload
 
     class UniversalSysExEvent(GenericEvent):
         """A class that encapsulates a Universal System Exclusive  event.
         """
 
-        def __init__(self, time, realTime, sysExChannel, code, subcode, payload):
+        def __init__(self, time, real_time, sys_ex_channel, code, subcode, payload):
             GenericEvent.__init__(self, time, )
             self.type = 'UniversalSysEx'
-            self.realTime = realTime
-            self.sysExChannel = sysExChannel
+            self.realTime = real_time
+            self.sysExChannel = sys_ex_channel
             self.code = code
             self.subcode = subcode
             self.payload = payload
@@ -220,23 +225,23 @@ class MIDITrack:
         """A class that encapsulates a program change event.
         """
 
-        def __init__(self, channel, time, eventType, parameter1, ):
+        def __init__(self, channel, time, event_type, parameter1, ):
             GenericEvent.__init__(self, time, )
             self.type = 'controllerEvent'
             self.parameter1 = parameter1
             self.channel = channel
-            self.eventType = eventType
+            self.eventType = event_type
 
     class TrackName(GenericEvent):
         """A class that encapsulates a program change event.
         """
 
-        def __init__(self, time, trackName):
+        def __init__(self, time, track_name):
             GenericEvent.__init__(self, time, )
             self.type = 'trackName'
-            self.trackName = trackName
+            self.trackName = track_name
 
-    def __init__(self, removeDuplicates, deinterleave):
+    def __init__(self, remove_duplicates, deinterleave):
         """Initialize the MIDITrack object.
         """
         self.headerString = struct.pack('cccc', b'M', b'T', b'r', b'k')
@@ -245,70 +250,65 @@ class MIDITrack:
         self.closed = False
         self.eventList = []
         self.MIDIEventList = []
-        self.remdep = removeDuplicates
+        self.remdep = remove_duplicates
         self.deinterleave = deinterleave
 
-    def addNoteByNumber(self, channel, pitch, time, duration, volume, annotation=None):
+    def add_note_by_number(self, channel, pitch, time, duration, volume, annotation=None):
         """Add a note by chromatic MIDI number
         """
         self.eventList.append(MIDITrack.Note(channel, pitch, time, duration, volume, annotation))
 
-    def addControllerEvent(self, channel, time, eventType, paramerter1):
+    def add_controller_event(self, channel, time, event_type, parameter1):
         """
         Add a controller event.
         """
 
-        self.eventList.append(MIDITrack.ControllerEvent(channel, time, eventType, \
-                                                        paramerter1))
+        self.eventList.append(MIDITrack.ControllerEvent(channel, time, event_type, parameter1))
 
-    def addTempo(self, time, tempo):
+    def add_tempo(self, time, tempo):
         """
         Add a tempo change (or set) event.
         """
         self.eventList.append(MIDITrack.Tempo(time, tempo))
 
-    def addSysEx(self, time, manID, payload):
+    def add_sys_ex(self, time, man_id, payload):
         """
         Add a SysEx event.
         """
-        self.eventList.append(MIDITrack.SysExEvent(time, manID, payload))
+        self.eventList.append(MIDITrack.SysExEvent(time, man_id, payload))
 
-    def addUniversalSysEx(self, time, code, subcode, payload, sysExChannel=0x7F, \
-                          realTime=False):
+    def add_universal_sys_ex(self, time, code, subcode, payload, sys_ex_channel=0x7F, real_time=False):
         """
         Add a Universal SysEx event.
         """
-        self.eventList.append(MIDITrack.UniversalSysExEvent(time, realTime, \
-                                                            sysExChannel, code, subcode, payload))
+        self.eventList.append(MIDITrack.UniversalSysExEvent(time, real_time, sys_ex_channel, code, subcode, payload))
 
-    def addProgramChange(self, channel, time, program):
+    def add_program_change(self, channel, time, program):
         """
         Add a program change event.
         """
         self.eventList.append(MIDITrack.ProgramChange(channel, time, program))
 
-    def addTrackName(self, time, trackName):
+    def add_track_name(self, time, track_name):
         """
         Add a track name event.
         """
-        self.eventList.append(MIDITrack.TrackName(time, trackName))
+        self.eventList.append(MIDITrack.TrackName(time, track_name))
 
-    def changeNoteTuning(self, tunings, sysExChannel=0x7F, realTime=False, \
-                         tuningProgam=0):
+    def change_note_tuning(self, tunings, sys_ex_channel=0x7F, real_time=False, tuning_program=0):
         """Change the tuning of MIDI notes
         """
-        payload = struct.pack('>B', tuningProgam)
+        payload = struct.pack('>B', tuning_program)
         payload = payload + struct.pack('>B', len(tunings))
         for (noteNumber, frequency) in tunings:
             payload = payload + struct.pack('>B', noteNumber)
-            MIDIFreqency = frequencyTransform(frequency)
-            for byte in MIDIFreqency:
+            midi_frequency = frequencyTransform(frequency)
+            for byte in midi_frequency:
                 payload = payload + struct.pack('>B', byte)
 
-        self.eventList.append(MIDITrack.UniversalSysExEvent(0, realTime, sysExChannel, \
-                                                            8, 2, payload))
+        self.eventList.append(MIDITrack.UniversalSysExEvent(0, real_time, sys_ex_channel, 8, 2, payload))
 
-    def processEventList(self):
+    def process_event_list(self):
         """
         Process the event list, creating a MIDIEventList
         
@@ -446,7 +446,7 @@ class MIDITrack:
         if self.remdep:
             self.removeDuplicates()
 
-        self.processEventList()
+        self.process_event_list()
 
     def writeMIDIStream(self):
         """
