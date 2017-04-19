@@ -839,7 +839,7 @@ class MIDIFile:
         
         #Write the MIDI Events to file.
         for i in range(0,self.numTracks):
-            self.tracks[i].writeTrack(fileHandle)
+            self.tracks[i].write_track(fileHandle)
 
     def addSysEx(self,track, time, manID, payload):
         """
@@ -931,7 +931,7 @@ class MIDIFile:
             return
                 
         for i in range(0,self.numTracks):
-            self.tracks[i].closeTrack()
+            self.tracks[i].close_track()
             # We want things like program changes to come before notes when they are at the
             # same time, so we sort the MIDI events by their ordinality
             self.tracks[i].MIDIEventList.sort()
@@ -939,8 +939,8 @@ class MIDIFile:
         origin = self.findOrigin()
 
         for i in range(0,self.numTracks):
-            self.tracks[i].adjustTime(origin)
-            self.tracks[i].writeMIDIStream()
+            self.tracks[i].adjust_time(origin)
+            self.tracks[i].write_midi_stream()
             
         self.closed = True
     
